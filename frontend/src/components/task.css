@@ -1,0 +1,46 @@
+.task {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    max-width: 350px;
+    margin: auto;
+}
+
+.task ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.task ul li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    flex: 1;
+    justify-content: center; /* Centers text and image */
+}
+
+.task ul li:hover {
+    background: #f0f0f0;
+}
+
+.task ul li img {
+    width: 25px;
+    height: 25px;
+}
+
+.task ul li span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
