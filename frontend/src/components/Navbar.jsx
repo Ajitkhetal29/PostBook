@@ -12,8 +12,10 @@ const Navbar = () => {
     
 
       <ul>
-        <li><span><img src={assets.profile} alt="" width="40px" /></span></li>
-        <li><span><img src={assets.logout} alt="" width="40px" /></span></li>
+       
+        <li> <NavLink to={"/profile"}><span><img src={assets.profile} alt="" width="40px" /></span></NavLink></li>
+        <li> <NavLink to={"/logout"}><span><img src={assets.logout} alt="" width="40px" /></span></NavLink></li>
+
 
       </ul>
 
