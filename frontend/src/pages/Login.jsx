@@ -41,16 +41,18 @@ const Login = () => {
         
         const response = await axios.post(`${backendUrl}/api/user/register`, {
           name, email, password, DOB, age, Maritial_Status
-        })
+        })        
 
         if (response.data.success) {
+          console.log(response.data);
+          
+          toast("Sign in Succesfful");
           setToken(response.data.token);
           localStorage.setItem("token", response.data.token);
-          console.log(token);
           
         }
         else {
-          toast.error(response.data.messsage);
+         alert(response.data.message);
         }
 
       }
@@ -62,7 +64,7 @@ const Login = () => {
           localStorage.setItem("token", response.data.token);
         }
         else {
-          toast.error(response.data.message)
+          alert(response.data.message)
         }
 
       }

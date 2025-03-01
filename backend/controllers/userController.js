@@ -10,18 +10,22 @@ const createToken = (id) => {
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, DOB, age, Maritial_Status } = req.body;
-
     const exists = await userModel.findOne({ email });
 
     if (exists) {
+      console.log( "User already exists");
       return res.json({ success: false, message: "User already exists" });
     }
 
     if (age < 16) {
+      console.log("user must 16 yrs old");
+      
       return res.json({ success: false, message: "user must 16 yrs old" });
     }
 
     if (password.length < 4) {
+      console.log("password must have atleast 4 characters");
+      
       return res.json({
         success: false,
         message: "password must have atleast 4 characters",
@@ -29,6 +33,8 @@ const registerUser = async (req, res) => {
     }
 
     if (!validator.isEmail(email)) {
+      console.log("password must have atleast 4 characters");
+      
       return res.json({ success: false, message: "email is not valid" });
     }
 

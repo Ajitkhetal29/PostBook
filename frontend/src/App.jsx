@@ -7,11 +7,13 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import AddPost from './pages/AddPost';
+import { ToastContainer } from 'react-toastify';
 
 
 const App = () => {
   return (
     <div className="container">
+      <ToastContainer/>
       <Navbar />
       <Routes>
 
