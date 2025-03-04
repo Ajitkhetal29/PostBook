@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import { PostBookContext } from "../context/PostBookContext";
+
 
 const Profile = () => {
+
+  const {userDetails} = useContext(PostBookContext)
+
   return (
     <div className="profile">
       <div className="img-div">
@@ -8,18 +13,18 @@ const Profile = () => {
       </div>
 
       <div className="info-div">
-        <h2>Ajit Khetal</h2>
+        <h2>{userDetails.name}</h2>
         <p>
           <span>
             <img src="src/assets/images/email.png" width="25px" alt="" /> :
           </span>
-          ajitkhetalofficial@gmail.com
+          {userDetails.email}
         </p>
         <p>
-          <span>Gender :</span>Male
+          <span>Gender :</span>{userDetails.gender}
         </p>
         <p>
-          <span>DOB :</span>29 Aug 1999
+          <span>DOB :</span>{new Date(userDetails.DOB).toDateString()}
         </p>
         <p>
           <span>Friends :</span>50

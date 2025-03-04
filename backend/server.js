@@ -2,6 +2,9 @@ import express from "express";
 import userRouter from "./routes/userRoutes.js";
 import connectDB from "./config/mongodb.js";
 import cors from "cors"
+import connectCloudinary from "./config/cloudinary.js";
+import postRouter from "./routes/postRoutes.js";
+
 
 
 const app = express();  
@@ -12,6 +15,8 @@ const PORT = 4000;
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
+connectCloudinary()
+
 
 
 app.get("/",(req,res)=>{
@@ -19,6 +24,7 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/api/user",userRouter)
+app.use("/api/post",postRouter)
 
 app.listen(PORT, ()=> console.log("App Started on PORT "+ PORT))
 

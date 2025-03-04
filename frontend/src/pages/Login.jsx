@@ -2,20 +2,23 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
 import { PostBookContext } from "../context/PostBookContext";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { backendUrl, token, setToken , navigate} = useContext(PostBookContext);
+  const { backendUrl, token, setToken } = useContext(PostBookContext);
   const [currentState, setCurrentState] = useState("Sign in");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [age, setAge] = useState("");
   const [DOB, setDOB] = useState("");
+  const [gender, setGender] = useState("");
   const [Maritial_Status, setMaritial_Status] = useState("");
+  const navigate = useNavigate();
 
   const calculateAge = (dob) => {
-    setDOB(dob)
+    setDOB(dob);
     const birthDate = new Date(dob);
     const today = new Date();
 
@@ -31,56 +34,55 @@ const Login = () => {
     setAge(age);
   };
 
-
   const onSubnitHandler = async (e) => {
     e.preventDefault();
 
     try {
-
       if (currentState === "Sign in") {
-        
         const response = await axios.post(`${backendUrl}/api/user/register`, {
-          name, email, password, DOB, age, Maritial_Status
-        })        
+          name,
+          email,
+          password,
+          gender,
+          DOB,
+          age,
+          Maritial_Status,
+        });
 
         if (response.data.success) {
           console.log(response.data);
-          
+
           toast("Sign in Succesfful");
           setToken(response.data.token);
           localStorage.setItem("token", response.data.token);
-          
+        } else {
+          alert(response.data.message);
         }
-        else {
-         alert(response.data.message);
-        }
-
-      }
-      else {
-        const response = await axios.post(`${backendUrl}/api/user/login`, { email, password });
+      } else {
+        const response = await axios.post(`${backendUrl}/api/user/login`, {
+          email,
+          password,
+        });
 
         if (response.data.success) {
-          setToken(response.data.token)
+          toast(" Log in Succesfful");
+          setToken(response.data.token);
           localStorage.setItem("token", response.data.token);
+        } else {
+          alert(response.data.message);
         }
-        else {
-          alert(response.data.message)
-        }
-
       }
-
     } catch (error) {
       console.log(error);
       toast.error(error.message);
     }
-
   };
 
-  useEffect(()=>{
-    if(token){
-      navigate("/")
+  useEffect(() => {
+    if (token) {
+      navigate("/");
     }
-  })
+  }, [token]);
 
   return (
     <div className="login">
@@ -128,14 +130,36 @@ const Login = () => {
               onChange={(e) => calculateAge(e.target.value)}
             />
           </div>
-
         )}
+
+        {currentState === "Sign in" && (
+          <div class="mb-3">
+            <label for="gender" class="form-label">
+              Gender
+            </label>
+            <select
+              onChange={(e) => setGender(e.target.value)}
+              name="gender"
+              id="gender"
+            >
+              <option value=""></option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Prefer Not to say">Prefer Not to say</option>
+            </select>
+          </div>
+        )}
+
         {currentState === "Sign in" && (
           <div class="mb-3">
             <label for="maritial_status" class="form-label">
               Maritial Status
             </label>
-            <select onChange={(e) => setMaritial_Status(e.target.value)} name="maritial_status" id="maritial_status">
+            <select
+              onChange={(e) => setMaritial_Status(e.target.value)}
+              name="maritial_status"
+              id="maritial_status"
+            >
               <option value=""></option>
               <option value="Single">Single</option>
               <option value="Marriend">Marriend</option>
@@ -165,7 +189,6 @@ const Login = () => {
             Login
           </button>
         )}
-
 
         {currentState === "Sign in" ? (
           <p>

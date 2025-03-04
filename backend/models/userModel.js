@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
     DOB: { type: Date, required: true },
     age: { type: Number, required: true },
     Maritial_Status: { type: String },
+    gender: { type: String },
     friends: { type: Object, default: {} },
   },
   { minimize: false }
