@@ -1,12 +1,14 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const PostBookContext = createContext();
 
 const PostBookContextProvider = (props) => {
   const [token, setToken] = useState("");
   const [userDetails, setUserDetails] = useState({});
+  const [posts, setPosts] = useState([]);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ const PostBookContextProvider = (props) => {
           { headers: { token } }
         );
         if (response.data.success) {
-          setUserDetails(response.data.userInfo)
+          setUserDetails(response.data.userInfo);
         } else {
           console.log(response.data.message);
         }
@@ -36,16 +38,36 @@ const PostBookContextProvider = (props) => {
     }
   };
 
-  useEffect(()=>{
-    fetchUserDeatils()
-  },[token])
+  const fetchAllPost = async () => {
+    try {
+      const response = await axios.post(backendUrl + "/api/post/allPosts");
+      if (response.data.success) {
+        setPosts(response.data.Posts);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchAllPost();
+  }, [posts]);
+
+  useEffect(() => {
+    fetchUserDeatils();
+  }, [token]);
 
   const value = {
     token,
     setToken,
     backendUrl,
     navigate,
-    userDetails
+    userDetails,
+    posts,
   };
 
   return (

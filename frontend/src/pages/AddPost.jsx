@@ -5,22 +5,31 @@ import { PostBookContext } from "../context/PostBookContext.jsx";
 import { toast } from "react-toastify";
 
 const AddPost = () => {
-  const { backendUrl, token } = useContext(PostBookContext);
+  const { backendUrl, userDetails } = useContext(PostBookContext);
 
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(false);
   const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-     
-  
+      
+      const formData = new FormData();
+      formData.append("description", description);
+      formData.append("userId", userDetails._id);
+
+      if (image) {
+        formData.append("image", image); // Ensure key matches backend
+      }
+
       const response = await axios.post(
         backendUrl + "/api/post/add",
-        {image , description},
-        { headers: { token } } 
+        formData,
+        {
+          headers: {},
+        }
       );
-  
+
       if (response.data.success) {
         toast.success(response.data.message);
       } else {
@@ -34,7 +43,7 @@ const AddPost = () => {
 
   return (
     <div className="add-post">
-      <form onSubmit={handleSubmit} >
+      <form onSubmit={handleSubmit}>
         <h2>Add a Post</h2>
         <div className="form-group">
           <div className="form-group">
