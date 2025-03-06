@@ -9,6 +9,7 @@ const PostBookContextProvider = (props) => {
   const [token, setToken] = useState("");
   const [userDetails, setUserDetails] = useState({});
   const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState([]);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
 
@@ -52,13 +53,25 @@ const PostBookContextProvider = (props) => {
     }
   };
 
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.post(backendUrl + "/api/user/allUsers");
+      if (response.data.success) {
+        setUsers(response.data.allUsers);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchAllPost();
-  }, [posts]);
+  }, [posts, token]);
 
   useEffect(() => {
     fetchUserDeatils();
+    getAllUsers();
   }, [token]);
 
   const value = {
@@ -68,6 +81,7 @@ const PostBookContextProvider = (props) => {
     navigate,
     userDetails,
     posts,
+    users
   };
 
   return (

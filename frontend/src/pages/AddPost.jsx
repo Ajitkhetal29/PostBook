@@ -5,7 +5,7 @@ import { PostBookContext } from "../context/PostBookContext.jsx";
 import { toast } from "react-toastify";
 
 const AddPost = () => {
-  const { backendUrl, userDetails } = useContext(PostBookContext);
+  const { backendUrl, userDetails ,navigate} = useContext(PostBookContext);
 
   const [image, setImage] = useState(false);
   const [description, setDescription] = useState("");
@@ -32,6 +32,8 @@ const AddPost = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
+        navigate('/')
+
       } else {
         toast.error(response.data.message);
       }

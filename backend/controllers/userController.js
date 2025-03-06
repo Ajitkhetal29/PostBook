@@ -9,7 +9,8 @@ const createToken = (id) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, gender, password, DOB, age, Maritial_Status } = req.body;
+    const { name, email, gender, password, DOB, age, Maritial_Status } =
+      req.body;
     const exists = await userModel.findOne({ email });
 
     if (exists) {
@@ -97,4 +98,14 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getUserDetails };
+const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await userModel.find({});
+
+    res.json({ success: true, allUsers });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { registerUser, loginUser, getUserDetails, getAllUsers };

@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema(
     age: { type: Number, required: true },
     Maritial_Status: { type: String },
     gender: { type: String },
-    friends: { type: Object, default: {} },
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }], 
+    friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }]
   },
   { minimize: false }
 );

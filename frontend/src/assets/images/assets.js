@@ -8,6 +8,9 @@ import save from "./save.png"
 import saved from "./saved.png"
 import addPost from "./addPost.png"
 import friends from "./friends.png"
+import send from './send.png'
+import bin from './bin.png'
+
 
 const posts = [
     {
@@ -159,5 +162,7 @@ export const assets = {
     save,
     saved,
     addPost,
-    friends
+    friends,
+    send,
+    bin
 }

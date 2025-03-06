@@ -8,6 +8,8 @@ import { PostBookContext } from "../context/PostBookContext";
 const Posts = () => {
   const [showComment, setShowComment] = useState(false);
   const { posts, userDetails, token, backendUrl } = useContext(PostBookContext);
+  const [commentText, setcommentText] = useState("");
+  const [postComments, setPostComments] = useState([]);
 
   const handleLike = async (postId) => {
     try {
@@ -27,6 +29,65 @@ const Posts = () => {
       toast.error("Failed to like post");
     }
   };
+
+  const handlePostComment = async (postId) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/post/addComment/${postId}`,
+        { commentText },
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        toast(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+      setcommentText("");
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
+    }
+  };
+
+  const getAllComment = async (postId) => {
+    setShowComment(!showComment);
+    setPostComments([]);
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/post/allComment/${postId}`,
+        {},
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        setPostComments(response.data.comments);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
+    }
+  };
+
+  const deleteComment = async (postId, commentId) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/post/deleteComment/${postId}/${commentId}`
+      );
+
+      if (response.data.success) {
+        setPostComments(response.data.comments);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {}, [showComment]);
 
   return (
     <div class="profile">
@@ -71,8 +132,9 @@ const Posts = () => {
                 )}
               </li>
               <li>
+                {post.comments.length}
                 <img
-                  onClick={() => setShowComment(!showComment)}
+                  onClick={() => getAllComment(post._id)}
                   src={assets.comment}
                   width="30px"
                 />
@@ -82,16 +144,33 @@ const Posts = () => {
               <img src={assets.save} alt="" width="30px" />
             </span>
           </div>
-          {/* {showComment && (
+          {showComment && (
             <div className="comments">
               {post.comments.map((comment, id) => (
                 <div class="comment" key={id}>
-                  <img src={comment.user.profilePic} alt="" />
-                  <p>{comment.comment}</p>
+                  {/* <img src={comment.userId.name} alt="" /> */}
+                  <p>{comment.text}</p>
+                  {userDetails._id === comment.userId._id
+                    ? "You"
+                    : comment.userId.name}
+                  {userDetails._id === comment.userId._id ? (
+                    <img src={assets.bin} alt="" onClick={()=>deleteComment(post._id, comment._id)} srcset="" />
+                  ) : (
+                    ""
+                  )}
                 </div>
               ))}
+              <div className="postComment">
+                <input
+                  type="text"
+                  onChange={(e) => setcommentText(e.target.value)}
+                />
+                <button onClick={() => handlePostComment(post._id)}>
+                  <img src={assets.send} alt="" />
+                </button>
+              </div>
             </div>
-          )} */}
+          )}
         </div>
       ))}
     </div>

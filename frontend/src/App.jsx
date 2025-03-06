@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import AddPost from "./pages/AddPost";
 import { ToastContainer } from "react-toastify";
 import { PostBookContext } from "./context/PostBookContext";
+import Friends from "./pages/Friends";
 
 const App = () => {
 
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/addPost" element={<  AddPost token={token} />}></Route>
+        <Route path="/friends" element={<Friends/>}></Route>
       </Routes>
     </div>
   );
