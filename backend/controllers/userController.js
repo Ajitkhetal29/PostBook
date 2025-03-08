@@ -108,4 +108,168 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getUserDetails, getAllUsers };
+const sendFriendrequest = async (req, res) => {
+  try {
+    const { receiverId } = req.params;
+    const { userId } = req.body;
+
+    const sender = await userModel.findById(userId);
+    const receiver = await userModel.findById(receiverId);
+
+    if (!receiver) {
+      return res.json({ success: false, message: "reciver not found" });
+    }
+
+    receiver.friendRequests.push(userId);
+    await receiver.save();
+
+    res.json({ success: true, message: "Friend Request sent " });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const acceptFriendRequest = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const { senderId } = req.params;
+
+    const user = await userModel.findById(userId);
+    const sender = await userModel.findById(senderId);
+
+    if (!user.friendRequests.includes(senderId)) {
+      return res.json({
+        success: false,
+        message: "No friend request found.",
+      });
+    }
+
+    user.friendRequests = user.friendRequests.filter(
+      (id) => id.toString() !== senderId
+    );
+    user.friends.push(senderId);
+    await user.save();
+
+    sender.friends.push(userId);
+    await sender.save();
+    res.json({ success: true, message: "Request Accepted" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const getAllfriendRequests = async (req, res) => {
+  const { userId } = req.body;
+
+  const user = await userModel
+    .findById(userId)
+    .populate("friendRequests", "name");
+
+  if (!user) {
+    return res.json({ success: true, message: "user not found" });
+  }
+  const friendRequests = user.friendRequests;
+
+  res.json({ success: true, friendRequests });
+};
+
+const getAllfriends = async (req, res) => {
+  const { userId } = req.body;
+
+  const user = await userModel
+    .findById(userId)
+    .populate("friendRequests", "name");
+
+  if (!user) {
+    return res.json({ success: true, message: "user not found" });
+  }
+  res.json({ success: true, friends: user.friends });
+};
+
+const removeFriendRequest = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const { requestId } = req.params;
+
+    console.log("removeFriendRequest called");
+
+    const user = await userModel.findById(userId);
+
+    if (!user.friendRequests.includes(requestId)) {
+      return res.json({
+        success: false,
+        message: "No friend request found.",
+      });
+    }
+
+    user.friendRequests = user.friendRequests.filter(
+      (id) => id.toString() !== requestId
+    );
+    await user.save();
+    res.json({ success: true, message: "Request removed" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const removefreind = async (req, res) => {
+  try {
+    const { friendId } = req.params;
+    const { userId } = req.body;
+
+    const user = await userModel.findById(userId);
+    const friend = await userModel.findById(friendId);
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "No user found.",
+      });
+    }
+    if (!friend) {
+      return res.json({
+        success: false,
+        message: "No friend found.",
+      });
+    }
+    if (!user.friends.includes(friendId)) {
+      return res.json({
+        success: false,
+        message: "you both were not frined.",
+      });
+    }
+    if (!friend.friends.includes(userId)) {
+      return res.json({
+        success: false,
+        message: "you both were not frined.",
+      });
+    }
+
+    user.friends = user.friends.filter((id) => id.toString() !== friendId);
+    friend.friends = user.friends.filter((id) => id.toString() !== userId);
+
+    await user.save();
+    await friend.save();
+
+    res.json({ success: true, message: "friend Removed" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  getUserDetails,
+  getAllUsers,
+  acceptFriendRequest,
+  sendFriendrequest,
+  getAllfriendRequests,
+  getAllfriends,
+  removeFriendRequest,
+  removefreind,
+};

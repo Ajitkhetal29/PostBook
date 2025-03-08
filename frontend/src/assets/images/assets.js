@@ -10,6 +10,8 @@ import addPost from "./addPost.png"
 import friends from "./friends.png"
 import send from './send.png'
 import bin from './bin.png'
+import add_friend from './add_friend.png'
+import remove_friend from './remove_friend.png'
 
 
 const posts = [
@@ -164,5 +166,7 @@ export const assets = {
     addPost,
     friends,
     send,
-    bin
+    bin,
+    add_friend,
+    remove_friend
 }

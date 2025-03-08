@@ -10,6 +10,9 @@ const PostBookContextProvider = (props) => {
   const [userDetails, setUserDetails] = useState({});
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
+  const [friendRequest, setFriendRequest] = useState([]);
+  const [friendList, setFriendList] = useState([]);
+
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
 
@@ -65,14 +68,126 @@ const PostBookContextProvider = (props) => {
     }
   };
 
+  const sendFreindRequest = async (receiverId) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/sendFriendRequest/${receiverId}`,
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        toast(response.data.message);
+      } else {
+        toast(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const acceptFriendRequest = async (senderId) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/acceptFriendRequest/${senderId}`,
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        toast(response.data.message);
+      } else {
+        toast(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const getAllfriendRequests = async () => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/user/getAllfriendRequests",
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        setFriendRequest(response.data.friendRequests);
+      } else {
+        // toast(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const getAllfriends = async () => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/user/getAllfriends",
+        {},
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        setFriendList(response.data.friends);
+      } else {
+        // toast(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const Removefriendrequest = async (requestId) => {
+    console.log(requestId);
+    
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/removeFriendRequest/${requestId}`,
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        toast(response.data.message);
+      } else {
+        toast(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const removefreind = async (friendId) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/removefreind/${friendId}`,
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        toast(response.data.message);
+      } else {
+        toast(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchAllPost();
-  }, [posts, token]);
+  }, [token]);
 
   useEffect(() => {
     fetchUserDeatils();
     getAllUsers();
-  }, [token]);
+    getAllfriendRequests();
+    getAllfriends();
+  }, [token, userDetails]);
 
   const value = {
     token,
@@ -81,7 +196,13 @@ const PostBookContextProvider = (props) => {
     navigate,
     userDetails,
     posts,
-    users
+    users,
+    friendRequest,
+    sendFreindRequest,
+    acceptFriendRequest,
+    friendList,
+    Removefriendrequest,
+    removefreind
   };
 
   return (
